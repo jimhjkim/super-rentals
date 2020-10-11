@@ -30,6 +30,29 @@ module('Integration | Component | map', function(hooks) {
     assert.ok(src.includes(`access_token=${token}`), 'the src should include the escaped access token');
   });
 
+  test('it updates the `src` attribute when the arguments change', async function(assert) {
+    this.setProperties({
+      lat:37.7749,
+      lng:-122.4194,
+      zoom: 10,
+      width: 150,
+      height: 120
+    });
+
+    await render(hbs`<Map
+      @lat={{this.lat}}
+      @lng={{this.lng}}
+      @zoom={{this.zoom}}
+      @width={{this.width}}
+      @height={{this.height}}
+     />`);
+
+     let img = find('.map img');
+
+     assert.ok(img.src.includes('-122.4194,37.7749,10'), 'the src should include the lng,lat,zoom parameter');
+     assert.ok(img.src.includes('150x120@2x'), 'the src should include the width,height and @2x parameter');
+  });
+
   test('the default alt attribute can be overridden', async function(assert) {
     await render(hbs`<Map
       @lat="37.7797"
